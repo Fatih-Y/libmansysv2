@@ -31,8 +31,8 @@ public class BookController {
     }
 
 
-    @PostMapping("/addBook")
-    public ResponseEntity<Book> addBook(@RequestBody CreateBookRequest createBookRequest) {
+    @PostMapping(value ="/addBook", consumes = {"multipart/form-data"})
+    public ResponseEntity<Book> addBook(@ModelAttribute CreateBookRequest createBookRequest) {
         Book savedBook = bookService.addBook(createBookRequest);
         return ResponseEntity.ok(savedBook);
     }

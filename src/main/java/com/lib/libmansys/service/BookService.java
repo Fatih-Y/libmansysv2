@@ -42,7 +42,7 @@ public class BookService {
         this.genreRepository = genreRepository;
     }
 
-    // Add a new book
+
     public Book addBook(CreateBookRequest createBookRequest) {
         Book book = new Book();
         book.setTitle(createBookRequest.getTitle());
