@@ -31,6 +31,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String email;
+
+        if (request.getRequestURI().startsWith("/swagger-ui") ||
+                request.getRequestURI().startsWith("/v3/api-docs") ||
+                request.getRequestURI().startsWith("/swagger-resources")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         if ((authHeader == null) || (!authHeader.startsWith("Bearer "))){
             filterChain.doFilter(request,response);
             return;
