@@ -30,8 +30,8 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    // Endpoint to add a new book
-    @PostMapping
+
+    @PostMapping("/addBook")
     public ResponseEntity<Book> addBook(@RequestBody CreateBookRequest createBookRequest) {
         Book savedBook = bookService.addBook(createBookRequest);
         return ResponseEntity.ok(savedBook);
