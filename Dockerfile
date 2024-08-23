@@ -16,4 +16,7 @@ VOLUME /tmp
 # Copy the JAR file from the build stage
 COPY --from=builder /app/target/*.jar app.jar
 
+# Expose the port
+EXPOSE 8080
+
 ENTRYPOINT ["java","-jar","/app.jar"]
