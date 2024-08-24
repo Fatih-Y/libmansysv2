@@ -15,6 +15,7 @@ public class CorsConfig {
                         addMapping("/**")
                         .allowedOrigins("http://localhost:3000",
                                 "http://localhost:8080","http://localhost:3003",
+                                "http://localhost:3002",
                                 "http://localhost:3001","https://libmansysv2.onrender.com",
                                 "https://libmansysv2.onrender.com/swagger-ui/index.html#")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
