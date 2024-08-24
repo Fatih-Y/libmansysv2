@@ -13,9 +13,10 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.
                         addMapping("/**")
-                        .allowedOrigins("http://localhost:3000","http://localhost:8080","http://localhost:3003","http://localhost:3001","https://libmansysv2.onrender.com")
+                        .allowedOrigins("*")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
-                        .allowedHeaders("*");
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
         };
     }
