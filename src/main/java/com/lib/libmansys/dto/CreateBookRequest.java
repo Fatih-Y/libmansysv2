@@ -8,9 +8,9 @@ import java.util.List;
 @Data
 public class CreateBookRequest {
     private String title;
-    private List<Long> authorIds;
-    private List<Long> publisherIds;
-    private List<Long> genreIds;
+    private List<String> authors;
+    private List<String> publishers;
+    private List<String> genres;
     private MultipartFile file;
 
 }

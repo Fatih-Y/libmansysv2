@@ -26,6 +26,7 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -43,25 +44,44 @@ public class BookService {
     }
 
 
-    public Book addBook(CreateBookRequest createBookRequest) {
+    public Book addBook(CreateBookRequest request) {
         Book book = new Book();
-        book.setTitle(createBookRequest.getTitle());
+        book.setTitle(request.getTitle());
 
-        List<Author> authors = authorRepository.findAllById(createBookRequest.getAuthorIds());
+        List<Author> authors = request.getAuthors().stream()
+                .map(authorFullName -> {
+                    if (authorFullName.trim().isEmpty()) {
+                        throw new IllegalArgumentException("Author name cannot be empty.");
+                    }
+                    String[] names = authorFullName.split(" ");
+                    String firstName = names.length > 0 ? names[0] : "";
+                    String lastName = names.length > 1 ? names[1] : "DefaultSurname"; // Varsayılan soyadı kullanın veya hata fırlatın
+                    return authorRepository.findByFirstNameAndLastName(firstName, lastName)
+                            .orElseGet(() -> authorRepository.save(new Author(firstName, lastName)));
+                })
+                .collect(Collectors.toList());
         book.setAuthors(authors);
 
-        List<Publisher> publishers = publisherRepository.findAllById(createBookRequest.getPublisherIds());
+        // Publishers handling
+        List<Publisher> publishers = request.getPublishers().stream()
+                .map(publisherName -> publisherRepository.findByName(publisherName)
+                        .orElseGet(() -> publisherRepository.save(new Publisher(publisherName))))
+                .collect(Collectors.toList());
         book.setPublishers(publishers);
 
-        List<Genre> genres = genreRepository.findAllById(createBookRequest.getGenreIds());
+        // Genres handling
+        List<Genre> genres = request.getGenres().stream()
+                .map(genreName -> genreRepository.findByName(genreName)
+                        .orElseGet(() -> genreRepository.save(new Genre(genreName))))
+                .collect(Collectors.toList());
         book.setGenres(genres);
 
-        String fileName = StringUtils.cleanPath(createBookRequest.getFile().getOriginalFilename());
+        String fileName = StringUtils.cleanPath(request.getFile().getOriginalFilename());
         if (fileName.contains("..")) {
             System.out.println("Geçersiz dosya");
         }
         try {
-            book.setBase64image(Base64.getEncoder().encodeToString(createBookRequest.getFile().getBytes()));
+            book.setBase64image(Base64.getEncoder().encodeToString(request.getFile().getBytes()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
