@@ -29,20 +29,31 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    @PostMapping
+    @PostMapping("/createUser")
     public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
         return ResponseEntity.ok(userService.createUser(createUserRequest));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/updateUser/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest updateUserRequest) {
         return ResponseEntity.ok(userService.updateUser(id, updateUserRequest));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.ok("User deleted successfully.");
+    }
+
+    @PutMapping("/makeAdmin/{id}")
+    public ResponseEntity<?> makeAdmin(@PathVariable Long id) {
+        try {
+            userService.makeAdmin(id);
+            return ResponseEntity.ok("Kullanıcı başarıyla ADMIN olarak güncellendi.");
+        } catch (Exception e) {
+            System.err.println("Kullanıcıyı güncellerken bir hata meydana geldi: " + e.getMessage());
+            return ResponseEntity.internalServerError().body("Kullanıcı güncellenirken bir hata oluştu.");
+        }
     }
 
 }

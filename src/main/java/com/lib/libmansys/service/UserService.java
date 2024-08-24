@@ -2,6 +2,7 @@ package com.lib.libmansys.service;
 
 
 import com.lib.libmansys.dto.CreateUserRequest;
+import com.lib.libmansys.dto.EditUser;
 import com.lib.libmansys.dto.UpdateUserRequest;
 import com.lib.libmansys.entity.Enum.LoanPeriodStatus;
 import com.lib.libmansys.entity.Enum.MembershipStatus;
@@ -56,10 +57,20 @@ public class UserService {
             existingUser.setEmail(updateUserRequest.getEmail());
             existingUser.setUsername(updateUserRequest.getUsername());
             existingUser.setPassword(updateUserRequest.getPassword());
-            existingUser.setRole(updateUserRequest.getRole());
             return userRepository.save(existingUser);
         }
         return null;
+    }
+    public void makeAdmin(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setRole(UserRole.ADMIN);
+            userRepository.save(user);
+        } else {
+            System.err.println(id +"ID'ye sahip kullanıcı bulunamadı: ");
+        }
     }
 
     public void deleteUser(Long id) {

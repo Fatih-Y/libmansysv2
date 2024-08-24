@@ -4,9 +4,10 @@ import com.lib.libmansys.entity.Enum.UserRole;
 import lombok.Data;
 
 @Data
-public class UpdateUserRequest {
+public class EditUser {
     private String name;
     private String email;
     private String username;
     private String password;
+
 }
