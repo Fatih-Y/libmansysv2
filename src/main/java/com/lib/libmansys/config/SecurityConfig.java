@@ -32,7 +32,6 @@ public class SecurityConfig {
                         "/webjars/**",
                         "/api/register",
                         "/api/authenticate").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
