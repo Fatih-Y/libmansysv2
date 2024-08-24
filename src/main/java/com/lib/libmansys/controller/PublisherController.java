@@ -15,23 +15,23 @@ public class PublisherController {
     @Autowired
     private PublisherService publisherService;
 
-    @GetMapping
+    @GetMapping("/getAll")
     public ResponseEntity<List<Publisher>> getAllPublishers() {
         return ResponseEntity.ok(publisherService.getAllPublishers());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getById/{id}")
     public ResponseEntity<Publisher> getPublisherById(@PathVariable Long id) {
         return ResponseEntity.ok(publisherService.getPublisherById(id));
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Publisher> createPublisher(@RequestBody CreatePublisherInput createPublisherInput) {
         Publisher savedPublisher = publisherService.createPublisher(createPublisherInput);
         return ResponseEntity.ok(savedPublisher);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Publisher> updatePublisher(@PathVariable Long id, @RequestBody Publisher publisher) {
         Publisher existingPublisher = publisherService.getPublisherById(id);
         existingPublisher.setName(publisher.getName());
@@ -40,7 +40,7 @@ public class PublisherController {
         return ResponseEntity.ok(existingPublisher);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deletePublisher(@PathVariable Long id) {
         publisherService.deletePublisher(id);
         return ResponseEntity.ok("Publisher deleted successfully.");

@@ -22,28 +22,28 @@ public class AuthorController {
     }
 
 
-    @PostMapping
+    @PostMapping("/addAuthor")
     public ResponseEntity<Author> addAuthor(@RequestBody CreateAuthorInput createAuthorInput) {
         Author savedAuthor = authorService.createAuthor(createAuthorInput);
         return ResponseEntity.ok(savedAuthor);
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Author> updateAuthor(@PathVariable Long id, @RequestBody Author author) {
         Author updatedAuthor = authorService.updateAuthor(id, author);
         return ResponseEntity.ok(updatedAuthor);
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
         authorService.deleteAuthor(id);
         return ResponseEntity.ok().build();
     }
 
 
-    @GetMapping
+    @GetMapping("/getAllAuthors")
     public ResponseEntity<List<Author>> getAllAuthors() {
         List<Author> authors = authorService.getAllAuthors();
         return ResponseEntity.ok(authors);
