@@ -32,9 +32,9 @@ public class BookController {
 
 
     @PostMapping(value ="/addBook", consumes = {"multipart/form-data"})
-    public ResponseEntity<Book> addBook(@ModelAttribute CreateBookRequest createBookRequest) {
-        Book savedBook = bookService.addBook(createBookRequest);
-        return ResponseEntity.ok(savedBook);
+    public ResponseEntity<String> addBook(@ModelAttribute CreateBookRequest createBookRequest) {
+        bookService.addBook(createBookRequest);
+        return ResponseEntity.ok("Kitap Ekleme Başarılı");
     }
 
 
