@@ -67,6 +67,12 @@ public class BookController {
                                         @PageableDefault(size = 10) Pageable pageable) {
         return bookService.findBooksByFilters(author, genre, publisher, title, pageable);
     }
+    @GetMapping("/searchSingle")
+    public Page<Book> searchBooks(@RequestParam(required = false) String searchTerm,
+                                  @PageableDefault(size = 10) Pageable pageable) {
+        return bookService.findBooksBySingleFilter(searchTerm, pageable);
+    }
+
 
 
     @GetMapping("/getBooksByStatus")

@@ -126,6 +126,16 @@ public class BookService {
             return bookRepository.findAll(pageable); // Fallback to returning all books with pagination
         }
     }
+    @Transactional
+    public Page<Book> findBooksBySingleFilter(String searchTerm, Pageable pageable) {
+        if (searchTerm != null && !searchTerm.isEmpty()) {
+            return bookRepository.findByTitleContainingIgnoreCaseOrAuthorsFirstNameContainingIgnoreCaseOrGenresNameContainingIgnoreCaseOrPublishersNameContainingIgnoreCase(
+                    searchTerm, searchTerm, searchTerm, searchTerm, pageable);
+        } else {
+            return bookRepository.findAll(pageable); // Fallback to returning all books with pagination
+        }
+    }
+
 
     public void exportBooks(HttpServletResponse response) throws IOException {
         List<Book> books = bookRepository.findAll();
