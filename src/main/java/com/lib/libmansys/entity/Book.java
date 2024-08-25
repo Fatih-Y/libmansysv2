@@ -24,7 +24,6 @@ public class Book {
 
     @Lob
     @Column(name="base64image", columnDefinition = "TEXT")
-    @JsonIgnore
     private String base64image;
 
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
