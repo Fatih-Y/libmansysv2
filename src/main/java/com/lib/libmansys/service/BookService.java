@@ -99,7 +99,7 @@ public class BookService {
         bookRepository.deleteById(id);
 
     }
-
+    @Transactional
     public Book findBooksById(Long id) {
         return bookRepository.findById(id).orElse(null);
     }

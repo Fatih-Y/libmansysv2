@@ -2,6 +2,7 @@ package com.lib.libmansys.controller;
 import com.lib.libmansys.dto.CreateBookRequest;
 import com.lib.libmansys.entity.Book;
 import com.lib.libmansys.entity.Enum.BookStatus;
+import com.lib.libmansys.entity.Genre;
 import com.lib.libmansys.service.BookService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/books")
@@ -49,6 +51,11 @@ public class BookController {
     @GetMapping("/getAllBooks")
     public Page<Book> getAllBooks(@PageableDefault(size = 10) Pageable pageable) {
         return bookService.findAllBooks(pageable);
+    }
+    @GetMapping("/getBookById/{id}")
+    public ResponseEntity<Book> getBookById(@PathVariable Long id) {
+        Book book = bookService.findBooksById(id);
+        return book != null ? ResponseEntity.ok(book) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
 

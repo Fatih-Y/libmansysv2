@@ -75,10 +75,11 @@ public class LoanService {
             userService.notifyUserOfLostBook(loan.getUser());
         }
     }
-
+    @Transactional
     public List<Loan> findActiveLoans() {
         return loanRepository.findAllByStatus(LoanStatus.ACTIVE);
     }
+    @Transactional
     public List<Loan> findPastLoans() {
         return loanRepository.findAllByStatus(LoanStatus.COMPLETED);
     }

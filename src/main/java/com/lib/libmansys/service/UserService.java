@@ -30,7 +30,7 @@ public class UserService {
         this.userRepository = userRepository;
         this.emailService = emailService;
     }
-
+    @Transactional
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
