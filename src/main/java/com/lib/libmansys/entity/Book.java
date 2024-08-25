@@ -1,5 +1,6 @@
 package com.lib.libmansys.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lib.libmansys.entity.Enum.BookStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -22,8 +23,13 @@ public class Book {
     private String explanation;
 
     @Lob
-    @Column(name="base64image")
+    @Column(name="base64image", columnDefinition = "TEXT")
+    @JsonIgnore
     private String base64image;
+
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Loan> loans = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(

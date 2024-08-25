@@ -103,12 +103,13 @@ public class BookService {
     public Book findBooksById(Long id) {
         return bookRepository.findById(id).orElse(null);
     }
+    @Transactional
     public Page<Book> findBooksByStatus(BookStatus status, Pageable pageable) {
         return bookRepository.findByStatus(status, pageable);
     }
-
+    @Transactional
     public List<Book> findBooksByTitle(String title) {
-        return bookRepository.findByTitleContaining(title);
+        return bookRepository.findByTitleContainingIgnoreCase(title);
     }
 
     @Transactional

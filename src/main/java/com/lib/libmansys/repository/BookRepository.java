@@ -11,7 +11,7 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<Book, Long> {
     Page<Book> findAll(Pageable pageable);
     Page<Book> findByStatus(BookStatus status, Pageable pageable);
-    List<Book> findByTitleContaining(String title);
+    List<Book> findByTitleContainingIgnoreCase(String title);
     Page<Book> findByGenresName(String name, Pageable pageable);
     Page<Book> findByPublishersName(String name, Pageable pageable);
     List<Book> findByStatus(BookStatus status);
