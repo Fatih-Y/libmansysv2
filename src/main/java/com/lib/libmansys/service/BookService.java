@@ -85,7 +85,7 @@ public class BookService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
+        book.setExplanation(request.getExplanation());
         book.setStatus(BookStatus.AVAILABLE);
 
         return bookRepository.save(book);

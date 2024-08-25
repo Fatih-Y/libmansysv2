@@ -8,6 +8,7 @@ import java.util.List;
 @Data
 public class CreateBookRequest {
     private String title;
+    private String explanation;
     private List<String> authors;
     private List<String> publishers;
     private List<String> genres;

@@ -18,6 +18,8 @@ public class Book {
 
     @Column(nullable = false)
     private String title;
+    @Column(nullable = false)
+    private String explanation;
 
     @Lob
     @Column(name="base64image")
