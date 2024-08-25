@@ -1,9 +1,7 @@
 package com.lib.libmansys.service;
 
 
-import com.lib.libmansys.dto.CreateUserRequest;
-import com.lib.libmansys.dto.EditUser;
-import com.lib.libmansys.dto.UpdateUserRequest;
+import com.lib.libmansys.dto.*;
 import com.lib.libmansys.entity.Enum.LoanPeriodStatus;
 import com.lib.libmansys.entity.Enum.MembershipStatus;
 import com.lib.libmansys.entity.Enum.UserRole;
@@ -16,8 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -37,6 +37,51 @@ public class UserService {
     @Transactional
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
+    }
+    public UserDTO getUserDetailsById(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+
+        if (user == null) {
+            return null;
+        }
+
+        // Convert to DTO to exclude loans
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setName(user.getName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setRole(user.getRole());
+
+        return userDTO;
+    }
+    @Transactional
+    public List<LoanDTO> getUserLoansById(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+
+        if (user == null) {
+            return Collections.emptyList();
+        }
+
+        // Convert loans to LoanDTO
+        List<LoanDTO> loanDTOs = user.getLoans().stream().map(loan -> {
+            LoanDTO loanDTO = new LoanDTO();
+            loanDTO.setId(loan.getId());
+            loanDTO.setLoanDate(loan.getLoanDate());
+            loanDTO.setExpectedReturnDate(loan.getExpectedReturnDate());
+            loanDTO.setStatus(loan.getStatus());
+
+            BookDTO bookDTO = new BookDTO();
+            bookDTO.setId(loan.getBook().getId());
+            bookDTO.setTitle(loan.getBook().getTitle());
+            // Include base64image or exclude it based on your requirements
+            bookDTO.setBase64image(loan.getBook().getBase64image());
+            loanDTO.setBook(bookDTO);
+
+            return loanDTO;
+        }).collect(Collectors.toList());
+
+        return loanDTOs;
     }
 
     public User createUser(CreateUserRequest createUserRequest) {

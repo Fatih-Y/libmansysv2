@@ -19,15 +19,32 @@ public class UserController {
     @Autowired
     private AuthenticationService authService;
 
-    @GetMapping("/getAll")
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+//    @GetMapping("/getAll")
+//    public ResponseEntity<List<User>> getAllUsers() {
+//        return ResponseEntity.ok(userService.getAllUsers());
+//    }
+//
+//    @GetMapping("/getById/{id}")
+//    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+//        return ResponseEntity.ok(userService.getUserById(id));
+//    }
+    @GetMapping("/getUserDetails/{id}")
+    public ResponseEntity<UserDTO> getUserDetails(@PathVariable Long id) {
+        UserDTO userDTO = userService.getUserDetailsById(id);
+        if (userDTO == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userDTO);
+    }
+    @GetMapping("/getUserLoans/{id}")
+    public ResponseEntity<List<LoanDTO>> getUserLoans(@PathVariable Long id) {
+        List<LoanDTO> loanDTOs = userService.getUserLoansById(id);
+        if (loanDTOs.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(loanDTOs);
     }
 
-    @GetMapping("/getById/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserById(id));
-    }
 
     @PostMapping("/createUser")
     public ResponseEntity<User> createUser(@RequestBody CreateUserRequest createUserRequest) {
