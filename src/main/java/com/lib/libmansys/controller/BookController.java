@@ -63,8 +63,9 @@ public class BookController {
     public Page<Book> getBooksByFilters(@RequestParam(required = false) String author,
                                         @RequestParam(required = false) String genre,
                                         @RequestParam(required = false) String publisher,
+                                        @RequestParam(required = false) String title,
                                         @PageableDefault(size = 10) Pageable pageable) {
-        return bookService.findBooksByFilters(author, genre, publisher, pageable);
+        return bookService.findBooksByFilters(author, genre, publisher, title, pageable);
     }
 
 

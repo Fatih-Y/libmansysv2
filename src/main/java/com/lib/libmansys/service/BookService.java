@@ -112,13 +112,15 @@ public class BookService {
     }
 
     @Transactional
-    public Page<Book> findBooksByFilters(String author, String genre, String publisher, Pageable pageable) {
-        if (author != null && genre == null && publisher == null) {
-            return bookRepository.findByAuthorsFirstName(author, pageable);
-        } else if (author == null && genre != null && publisher == null) {
-            return bookRepository.findByGenresName(genre, pageable);
-        } else if (author == null && genre == null && publisher != null) {
-            return bookRepository.findByPublishersName(publisher, pageable);
+    public Page<Book> findBooksByFilters(String author, String genre, String publisher, String title, Pageable pageable) {
+        if (author != null && genre == null && publisher == null && title == null) {
+            return bookRepository.findByAuthorsFirstNameContainingIgnoreCase(author, pageable);
+        } else if (author == null && genre != null && publisher == null && title == null) {
+            return bookRepository.findByGenresNameContainingIgnoreCase(genre, pageable);
+        } else if (author == null && genre == null && publisher != null && title == null) {
+            return bookRepository.findByPublishersNameContainingIgnoreCase(publisher, pageable);
+        } else if (author == null && genre == null && publisher == null && title != null) {
+            return bookRepository.findByTitleContainingIgnoreCase(title, pageable);
         } else {
             return bookRepository.findAll(pageable); // Fallback to returning all books with pagination
         }

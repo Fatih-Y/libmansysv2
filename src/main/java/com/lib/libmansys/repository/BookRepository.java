@@ -16,5 +16,15 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Page<Book> findByPublishersName(String name, Pageable pageable);
     List<Book> findByStatus(BookStatus status);
     Page<Book> findByAuthorsFirstName(String firstName, Pageable pageable);
+    Page<Book> findByTitle(String title, Pageable pageable);
+
+    Page<Book> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+
+    Page<Book> findByAuthorsFirstNameContainingIgnoreCase(String author, Pageable pageable);
+
+    Page<Book> findByGenresNameContainingIgnoreCase(String genre, Pageable pageable);
+
+    Page<Book> findByPublishersNameContainingIgnoreCase(String publisher, Pageable pageable);
+
 //    List<Book> findByAuthors_LastName(String lastName);
 }
