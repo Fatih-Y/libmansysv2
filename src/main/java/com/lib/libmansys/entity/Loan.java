@@ -18,7 +18,7 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "book_id", nullable = false)
     @JsonBackReference
     private Book book;
@@ -38,7 +38,7 @@ public class Loan {
     private LocalDate actualReturnDate;
 
     @Enumerated(EnumType.STRING)
-    private LoanStatus status; // ACTIVE, RETURNED, LATE
+    private LoanStatus status;
 
     public Loan() {
     }

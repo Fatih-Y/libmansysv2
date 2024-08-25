@@ -10,6 +10,7 @@ import com.lib.libmansys.repository.LoanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.lib.libmansys.entity.Enum.LoanPeriodStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -80,6 +81,10 @@ public class LoanService {
     }
     public List<Loan> findPastLoans() {
         return loanRepository.findAllByStatus(LoanStatus.COMPLETED);
+    }
+    @Transactional
+    public List<Loan> getLoansByUserId(Long userId) {
+        return loanRepository.findByUserId(userId);
     }
 
 }

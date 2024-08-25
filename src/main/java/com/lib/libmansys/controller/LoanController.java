@@ -46,7 +46,11 @@ public class LoanController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-
+    @GetMapping("/getByUserId/{userId}")
+    public ResponseEntity<List<Loan>> getLoansByUserId(@PathVariable Long userId) {
+        List<Loan> loans = loanService.getLoansByUserId(userId);
+        return ResponseEntity.ok(loans);
+    }
 
     @PostMapping("/return")
     public ResponseEntity<String> returnBook(@RequestParam Long userId, @RequestParam Long bookId) {
