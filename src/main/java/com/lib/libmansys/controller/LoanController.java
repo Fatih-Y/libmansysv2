@@ -52,8 +52,8 @@ public class LoanController {
         return ResponseEntity.ok(loans);
     }
 
-    @PostMapping("/return")
-    public ResponseEntity<String> returnBook(@RequestParam Long userId, @RequestParam Long bookId) {
+    @PostMapping("/return/{userId}/{bookId}")
+    public ResponseEntity<String> returnBook(@PathVariable Long userId, @PathVariable Long bookId) {
         try {
             User user = userService.getUserById(userId);
             Book book = bookService.findBooksById(bookId);
