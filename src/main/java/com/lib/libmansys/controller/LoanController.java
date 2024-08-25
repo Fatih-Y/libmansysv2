@@ -62,9 +62,14 @@ public class LoanController {
         loanService.markOverdueLoansAsLost();
         return ResponseEntity.ok("Overdue loans checked and updated.");
     }
-    @GetMapping
-    public ResponseEntity<List<Loan>> getAllLoans() {
-        List<Loan> loans = loanService.findAllActiveLoans();
+    @GetMapping("/activeLoans")
+    public ResponseEntity<List<Loan>> getActiveLoans() {
+        List<Loan> loans = loanService.findActiveLoans();
+        return ResponseEntity.ok(loans);
+    }
+    @GetMapping("/pastLoans")
+    public ResponseEntity<List<Loan>> getPastLoans() {
+        List<Loan> loans = loanService.findPastLoans();
         return ResponseEntity.ok(loans);
     }
 }
