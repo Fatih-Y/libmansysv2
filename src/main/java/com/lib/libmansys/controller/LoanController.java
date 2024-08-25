@@ -1,11 +1,13 @@
 package com.lib.libmansys.controller;
 
+import com.lib.libmansys.dto.EmailRequest;
 import com.lib.libmansys.dto.LoanRequest;
 import com.lib.libmansys.entity.Book;
 import com.lib.libmansys.entity.Enum.LoanPeriodStatus;
 import com.lib.libmansys.entity.Loan;
 import com.lib.libmansys.entity.User;
 import com.lib.libmansys.service.BookService;
+import com.lib.libmansys.service.EmailService;
 import com.lib.libmansys.service.LoanService;
 import com.lib.libmansys.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +25,13 @@ public class LoanController {
     private final LoanService loanService;
     private final UserService userService;
     private final BookService bookService;
+    private final EmailService emailService;
     @Autowired
-    public LoanController(LoanService loanService, UserService userService, BookService bookService) {
+    public LoanController(LoanService loanService, UserService userService, BookService bookService, EmailService emailService) {
         this.loanService = loanService;
         this.userService = userService;
         this.bookService = bookService;
+        this.emailService = emailService;
     }
 
 
@@ -71,5 +75,14 @@ public class LoanController {
     public ResponseEntity<List<Loan>> getPastLoans() {
         List<Loan> loans = loanService.findPastLoans();
         return ResponseEntity.ok(loans);
+    }
+    @PostMapping("/sendEmail")
+    public ResponseEntity<String> sendEmail(@RequestBody EmailRequest emailRequest) {
+        try {
+            emailService.sendEmail(emailRequest.getTo(), emailRequest.getSubject(), emailRequest.getContent());
+            return ResponseEntity.ok("Email sent successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send email: " + e.getMessage());
+        }
     }
 }

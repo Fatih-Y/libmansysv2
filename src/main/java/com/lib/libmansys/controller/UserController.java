@@ -55,5 +55,5 @@ public class UserController {
             return ResponseEntity.internalServerError().body("Kullanıcı güncellenirken bir hata oluştu.");
         }
     }
-
+    
 }
