@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -110,7 +111,7 @@ public class BookService {
         return bookRepository.findByTitleContaining(title);
     }
 
-
+    @Transactional
     public Page<Book> findBooksByFilters(String author, String genre, String publisher, Pageable pageable) {
         if (author != null && genre == null && publisher == null) {
             return bookRepository.findByAuthorsFirstName(author, pageable);
