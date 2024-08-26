@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
     private static final String[] AUTH_WHITELIST = {
             "/v2/api-docs",
@@ -37,6 +38,8 @@ public class SecurityConfig {
                                 requests.requestMatchers("/api/authenticate").permitAll()
                                         .requestMatchers(AUTH_WHITELIST).permitAll()
                                         .requestMatchers("/api/register").permitAll()
+                                        .requestMatchers(HttpMethod.POST, "/api/books/**").authenticated()
+                                        .requestMatchers(HttpMethod.DELETE, "/api/books/**").authenticated()
                                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                                         .anyRequest().authenticated()
                 )
