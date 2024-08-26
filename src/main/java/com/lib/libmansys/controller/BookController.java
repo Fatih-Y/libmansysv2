@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -30,7 +31,7 @@ public class BookController {
         this.bookService = bookService;
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value ="/addBook", consumes = {"multipart/form-data"})
     public ResponseEntity<String> addBook(@ModelAttribute CreateBookRequest createBookRequest) {
         bookService.addBook(createBookRequest);
@@ -38,7 +39,7 @@ public class BookController {
     }
 
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
@@ -85,6 +86,7 @@ public class BookController {
                                        @PageableDefault(size = 10) Pageable pageable) {
         return bookService.findBooksByStatus(status, pageable);
     }
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/export")
     public ResponseEntity<String> exportBooks(HttpServletResponse response) {
         try {

@@ -22,14 +22,14 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/addAuthor")
     public ResponseEntity<Author> addAuthor(@RequestBody CreateAuthorInput createAuthorInput) {
         Author savedAuthor = authorService.createAuthor(createAuthorInput);
         return ResponseEntity.ok(savedAuthor);
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
     public ResponseEntity<Author> updateAuthor(@PathVariable Long id, @RequestBody Author author) {
         Author updatedAuthor = authorService.updateAuthor(id, author);
