@@ -54,21 +54,31 @@ public class LoanService {
         bookRepository.save(book);
     }
 
-    public void returnBook(User user, Book book) {
+    public String returnBook(Long userId, Long bookId) {
+        User user = userService.getUserById(userId);
+        Book book = bookService.findBooksById(bookId);
+
         Loan loan = loanRepository.findByUserIdAndBookIdAndStatus(user.getId(), book.getId(), LoanStatus.ACTIVE);
-        if (loan != null) {
-            LocalDate now = LocalDate.now();
-            loan.setActualReturnDate(now);
-            if (now.isAfter(loan.getExpectedReturnDate())) {
-                loan.setStatus(LoanStatus.LATE);
-                userService.applyPenalties(user);
-            } else {
-                loan.setStatus(LoanStatus.COMPLETED);
-            }
-            book.setStatus(BookStatus.AVAILABLE);
-            bookRepository.save(book);
-            loanRepository.save(loan);
+        if (loan == null) {
+            throw new RuntimeException("Kullanıcının böyle bir ödünç işlemi yok.");
         }
+        if (book.getStatus() != BookStatus.LOANED) {
+            throw new RuntimeException("Bu kitap ödünç verilmemiş.");
+        }
+
+        LocalDate now = LocalDate.now();
+        loan.setActualReturnDate(now);
+        if (now.isAfter(loan.getExpectedReturnDate())) {
+            loan.setStatus(LoanStatus.LATE);
+            userService.applyPenalties(user);
+        } else {
+            loan.setStatus(LoanStatus.COMPLETED);
+        }
+        book.setStatus(BookStatus.AVAILABLE);
+        bookRepository.save(book);
+        loanRepository.save(loan);
+
+        return "Kitap başarıyla iade edildi.";
     }
 
 

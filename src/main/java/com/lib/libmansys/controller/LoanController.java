@@ -56,12 +56,18 @@ public class LoanController {
     @PostMapping("/return/{userId}/{bookId}")
     public ResponseEntity<String> returnBook(@PathVariable Long userId, @PathVariable Long bookId) {
         try {
-            User user = userService.getUserById(userId);
-            Book book = bookService.findBooksById(bookId);
-            loanService.returnBook(user, book);
-            return ResponseEntity.ok("Book returned successfully.");
+            String result = loanService.returnBook(userId, bookId);
+            return ResponseEntity.ok(result);
+        } catch (RuntimeException e) {
+            HttpStatus status = HttpStatus.BAD_REQUEST;
+            if (e.getMessage().contains("Kullanıcının böyle bir ödünç işlemi yok.")) {
+                status = HttpStatus.NOT_FOUND;
+            } else if (e.getMessage().contains("kitap ödünç verilmemiş.")) {
+                status = HttpStatus.CONFLICT;
+            }
+            return ResponseEntity.status(status).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to return book: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Beklenmeyen bir hata oluştu: " + e.getMessage());
         }
     }
 
