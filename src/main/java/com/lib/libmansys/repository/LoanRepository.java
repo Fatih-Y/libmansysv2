@@ -11,7 +11,7 @@ import java.util.List;
 public interface LoanRepository extends JpaRepository<Loan, Long> {
 
 
-    int countActiveLoansByUserId(Long userId);
+    int countByUserIdAndStatus(Long userId, LoanStatus status);
 
     List<Loan> findLoansByUserIdAndStatus(Long userId, LoanStatus status);
     List<Loan> findByUserId(Long userId);

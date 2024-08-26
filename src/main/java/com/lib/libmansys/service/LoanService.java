@@ -18,26 +18,32 @@ import java.util.List;
 @Service
 public class LoanService {
 
-    @Autowired
-    private LoanRepository loanRepository;
+    private final LoanRepository loanRepository;
+    private final BookRepository bookRepository;
+    private final UserService userService;
+    private final BookService bookService;
 
-    @Autowired
-    private BookRepository bookRepository;
-
-    @Autowired
-    private UserService userService;
+    public LoanService(LoanRepository loanRepository, BookRepository bookRepository, UserService userService, BookService bookService) {
+        this.loanRepository = loanRepository;
+        this.bookRepository = bookRepository;
+        this.userService = userService;
+        this.bookService = bookService;
+    }
 
     public boolean canBorrowMoreBooks(User user) {
-        int activeLoanCount = loanRepository.countActiveLoansByUserId(user.getId());
+        int activeLoanCount = loanRepository.countByUserIdAndStatus(user.getId(), LoanStatus.ACTIVE);
         return activeLoanCount < 3;
     }
-// user entity yerine id al
-    public void borrowBook(User user, Book book) {
+// user entity yerine id al - tamamlandı
+    public void borrowBook(Long userId, Long bookId) {
+        User user = userService.getUserById(userId);  // Fetch user inside the method
+        Book book = bookService.findBooksById(bookId);  // Fetch book inside the method
+
         if (!canBorrowMoreBooks(user)) {
-            throw new RuntimeException("Maximum loan limit reached.");
+            throw new RuntimeException("Maksimum ödünç kitap sınırına ulaşıldı.");
         }
         if (book.getStatus() != BookStatus.AVAILABLE) {
-            throw new RuntimeException("Book is not available for borrowing.");
+            throw new RuntimeException("Kitap ödünç alınamaz.");
         }
 
         LocalDate today = LocalDate.now();

@@ -38,14 +38,23 @@ public class LoanController {
     @PostMapping("/borrow")
     public ResponseEntity<String> borrowBook(@RequestParam Long userId, @RequestParam Long bookId) {
         try {
-            User user = userService.getUserById((userId));
-            Book book = bookService.findBooksById(bookId);
-            loanService.borrowBook(user, book);
-            return ResponseEntity.ok("Book borrowed successfully.");
+            loanService.borrowBook(userId, bookId);
+            return ResponseEntity.ok("Kitap başarıyla ödünç alındı.");  // Success message in Turkish
+        } catch (RuntimeException e) {
+            HttpStatus status = HttpStatus.BAD_REQUEST;
+            if (e.getMessage().contains("Kitap ödünç alınamaz.")) {
+                status = HttpStatus.CONFLICT;  // Book already loaned
+            } else if (e.getMessage().contains("Maksimum ödünç kitap sınırına ulaşıldı.")) {
+                status = HttpStatus.FORBIDDEN;  // Loan limit reached
+            }
+            return ResponseEntity.status(status).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Beklenmeyen bir hata oluştu.");  // Generic error handling
         }
     }
+
+
+
     @GetMapping("/getByUserId/{userId}")
     public ResponseEntity<List<Loan>> getLoansByUserId(@PathVariable Long userId) {
         List<Loan> loans = loanService.getLoansByUserId(userId);
