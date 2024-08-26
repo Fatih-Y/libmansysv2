@@ -39,17 +39,17 @@ public class LoanController {
     public ResponseEntity<String> borrowBook(@RequestParam Long userId, @RequestParam Long bookId) {
         try {
             loanService.borrowBook(userId, bookId);
-            return ResponseEntity.ok("Kitap başarıyla ödünç alındı.");  // Success message in Turkish
+            return ResponseEntity.ok("Kitap başarıyla ödünç alındı.");
         } catch (RuntimeException e) {
             HttpStatus status = HttpStatus.BAD_REQUEST;
             if (e.getMessage().contains("Kitap ödünç alınamaz.")) {
-                status = HttpStatus.CONFLICT;  // Book already loaned
+                status = HttpStatus.CONFLICT;  
             } else if (e.getMessage().contains("Maksimum ödünç kitap sınırına ulaşıldı.")) {
-                status = HttpStatus.FORBIDDEN;  // Loan limit reached
+                status = HttpStatus.FORBIDDEN;
             }
             return ResponseEntity.status(status).body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Beklenmeyen bir hata oluştu.");  // Generic error handling
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Beklenmeyen bir hata oluştu.");
         }
     }
 
