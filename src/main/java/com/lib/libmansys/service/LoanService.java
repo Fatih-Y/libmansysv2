@@ -61,7 +61,6 @@ public class LoanService {
             loan.setActualReturnDate(now);
             if (now.isAfter(loan.getExpectedReturnDate())) {
                 loan.setStatus(LoanStatus.LATE);
-                // Apply penalties
                 userService.applyPenalties(user);
             } else {
                 loan.setStatus(LoanStatus.COMPLETED);

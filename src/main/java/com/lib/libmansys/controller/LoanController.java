@@ -43,7 +43,7 @@ public class LoanController {
         } catch (RuntimeException e) {
             HttpStatus status = HttpStatus.BAD_REQUEST;
             if (e.getMessage().contains("Kitap ödünç alınamaz.")) {
-                status = HttpStatus.CONFLICT;  
+                status = HttpStatus.CONFLICT;
             } else if (e.getMessage().contains("Maksimum ödünç kitap sınırına ulaşıldı.")) {
                 status = HttpStatus.FORBIDDEN;
             }
@@ -51,14 +51,6 @@ public class LoanController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Beklenmeyen bir hata oluştu.");
         }
-    }
-
-
-
-    @GetMapping("/getByUserId/{userId}")
-    public ResponseEntity<List<Loan>> getLoansByUserId(@PathVariable Long userId) {
-        List<Loan> loans = loanService.getLoansByUserId(userId);
-        return ResponseEntity.ok(loans);
     }
 
     @PostMapping("/return/{userId}/{bookId}")
@@ -71,6 +63,12 @@ public class LoanController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to return book: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/getByUserId/{userId}")
+    public ResponseEntity<List<Loan>> getLoansByUserId(@PathVariable Long userId) {
+        List<Loan> loans = loanService.getLoansByUserId(userId);
+        return ResponseEntity.ok(loans);
     }
 
 
