@@ -58,7 +58,7 @@ public class LoanService {
         User user = userService.getUserById(userId);
         Book book = bookService.findBooksById(bookId);
 
-        Loan loan = loanRepository.findByUserIdAndBookIdAndStatus(user.getId(), book.getId(), LoanStatus.ACTIVE);
+        Loan loan = loanRepository.findByUserIdAndBookIdAndStatus(user.getId(), book.getId(), LoanStatus.ACTIVE); // geç kalınmış işlemleri ekle
         if (loan == null) {
             throw new RuntimeException("Kullanıcının böyle bir ödünç işlemi yok.");
         }
