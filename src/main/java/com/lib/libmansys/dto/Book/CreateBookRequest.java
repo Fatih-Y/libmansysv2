@@ -1,6 +1,5 @@
-package com.lib.libmansys.dto;
+package com.lib.libmansys.dto.Book;
 
-import com.lib.libmansys.entity.Enum.BookStatus;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,9 +1,9 @@
 package com.lib.libmansys.controller;
 
 import com.lib.libmansys.config.AuthenticationService;
-import com.lib.libmansys.dto.AuthenticationRequest;
-import com.lib.libmansys.dto.AuthenticationResponse;
-import com.lib.libmansys.dto.RegisterRequest;
+import com.lib.libmansys.dto.Authentication.AuthenticationRequest;
+import com.lib.libmansys.dto.Authentication.AuthenticationResponse;
+import com.lib.libmansys.dto.Authentication.RegisterRequest;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

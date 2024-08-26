@@ -1,4 +1,4 @@
-package com.lib.libmansys.dto;
+package com.lib.libmansys.dto.Authentication;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

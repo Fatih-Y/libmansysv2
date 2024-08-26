@@ -1,9 +1,9 @@
 package com.lib.libmansys.config;
 
 
-import com.lib.libmansys.dto.AuthenticationRequest;
-import com.lib.libmansys.dto.AuthenticationResponse;
-import com.lib.libmansys.dto.RegisterRequest;
+import com.lib.libmansys.dto.Authentication.AuthenticationRequest;
+import com.lib.libmansys.dto.Authentication.AuthenticationResponse;
+import com.lib.libmansys.dto.Authentication.RegisterRequest;
 import com.lib.libmansys.entity.Enum.MembershipStatus;
 import com.lib.libmansys.entity.Enum.UserRole;
 import com.lib.libmansys.entity.User;

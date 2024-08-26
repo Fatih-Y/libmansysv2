@@ -13,6 +13,7 @@ import com.lib.libmansys.entity.Enum.LoanPeriodStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -36,8 +37,8 @@ public class LoanService {
     }
 // user entity yerine id al - tamamlandı
     public void borrowBook(Long userId, Long bookId) {
-        User user = userService.getUserById(userId);  // Fetch user inside the method
-        Book book = bookService.findBooksById(bookId);  // Fetch book inside the method
+        User user = userService.getUserById(userId);
+        Book book = bookService.findBooksById(bookId);
 
         if (!canBorrowMoreBooks(user)) {
             throw new RuntimeException("Maksimum ödünç kitap sınırına ulaşıldı.");
@@ -58,10 +59,18 @@ public class LoanService {
         User user = userService.getUserById(userId);
         Book book = bookService.findBooksById(bookId);
 
-        Loan loan = loanRepository.findByUserIdAndBookIdAndStatus(user.getId(), book.getId(), LoanStatus.ACTIVE); // geç kalınmış işlemleri ekle
-        if (loan == null) {
-            throw new RuntimeException("Kullanıcının böyle bir ödünç işlemi yok.");
+        List<LoanStatus> statuses = Arrays.asList(LoanStatus.ACTIVE, LoanStatus.LATE);
+        List<Loan> loans = loanRepository.findByUserIdAndBookIdAndStatusIn(user.getId(), book.getId(), statuses);
+
+        if (loans.isEmpty()) {
+            throw new RuntimeException("Kullanıcının bu kitap için aktif veya geç ödünç işlemi yok.");
         }
+
+        Loan loan = loans.stream()
+                .filter(l -> l.getBook().getId().equals(bookId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("No active or late loan found for this book."));
+
         if (book.getStatus() != BookStatus.LOANED) {
             throw new RuntimeException("Bu kitap ödünç verilmemiş.");
         }
@@ -80,7 +89,6 @@ public class LoanService {
 
         return "Kitap başarıyla iade edildi.";
     }
-
 
     public void markOverdueLoansAsLost() {
         List<Loan> overdueLoans = loanRepository.findLoansByStatusAndExpectedReturnDateBefore(LoanStatus.ACTIVE, LocalDate.now().minusDays(30));
@@ -104,3 +112,4 @@ public class LoanService {
     }
 
 }
+//

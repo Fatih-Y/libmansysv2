@@ -10,15 +10,10 @@ import java.util.List;
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, Long> {
 
-
     int countByUserIdAndStatus(Long userId, LoanStatus status);
-
     List<Loan> findLoansByUserIdAndStatus(Long userId, LoanStatus status);
     List<Loan> findByUserId(Long userId);
-
-    Loan findByUserIdAndBookIdAndStatus(Long userId, Long bookId, LoanStatus status);
-
-
+    List<Loan> findByUserIdAndBookIdAndStatusIn(Long userId, Long bookId, List<LoanStatus> statuses);
     List<Loan> findAllByStatus(LoanStatus status);
     List<Loan> findLoansByStatusAndExpectedReturnDateBefore(LoanStatus status, LocalDate date);
 }

@@ -1,6 +1,6 @@
 package com.lib.libmansys.controller;
 
-import com.lib.libmansys.dto.CreateAuthorInput;
+import com.lib.libmansys.dto.Author.CreateAuthorInput;
 import com.lib.libmansys.entity.Author;
 import com.lib.libmansys.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;

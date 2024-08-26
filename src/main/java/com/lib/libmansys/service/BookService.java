@@ -1,6 +1,6 @@
 package com.lib.libmansys.service;
 
-import com.lib.libmansys.dto.CreateBookRequest;
+import com.lib.libmansys.dto.Book.CreateBookRequest;
 import com.lib.libmansys.entity.Author;
 import com.lib.libmansys.entity.Book;
 import com.lib.libmansys.entity.Enum.BookStatus;
@@ -56,7 +56,7 @@ public class BookService {
                     }
                     String[] names = authorFullName.split(" ");
                     String firstName = names.length > 0 ? names[0] : "";
-                    String lastName = names.length > 1 ? names[1] : "DefaultSurname"; // Varsayılan soyadı kullanın veya hata fırlatın
+                    String lastName = names.length > 1 ? names[1] : "DefaultSurname";
                     return authorRepository.findByFirstNameAndLastName(firstName, lastName)
                             .orElseGet(() -> authorRepository.save(new Author(firstName, lastName)));
                 })
@@ -92,12 +92,8 @@ public class BookService {
         return bookRepository.save(book);
     }
 
-
-
     public void deleteBook(Long id) {
-
         bookRepository.deleteById(id);
-
     }
     @Transactional
     public Book findBooksById(Long id) {
@@ -123,7 +119,7 @@ public class BookService {
         } else if (author == null && genre == null && publisher == null && title != null) {
             return bookRepository.findByTitleContainingIgnoreCase(title, pageable);
         } else {
-            return bookRepository.findAll(pageable); // Fallback to returning all books with pagination
+            return bookRepository.findAll(pageable); // fallback
         }
     }
     @Transactional
@@ -132,7 +128,7 @@ public class BookService {
             return bookRepository.findByTitleContainingIgnoreCaseOrAuthorsFirstNameContainingIgnoreCaseOrGenresNameContainingIgnoreCaseOrPublishersNameContainingIgnoreCase(
                     searchTerm, searchTerm, searchTerm, searchTerm, pageable);
         } else {
-            return bookRepository.findAll(pageable); // Fallback to returning all books with pagination
+            return bookRepository.findAll(pageable); // fallback
         }
     }
 

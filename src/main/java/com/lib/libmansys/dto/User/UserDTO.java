@@ -1,4 +1,4 @@
-package com.lib.libmansys.dto;
+package com.lib.libmansys.dto.User;
 
 import com.lib.libmansys.entity.Enum.UserRole;
 import lombok.Data;

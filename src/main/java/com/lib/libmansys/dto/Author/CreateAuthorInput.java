@@ -1,4 +1,4 @@
-package com.lib.libmansys.dto;
+package com.lib.libmansys.dto.Author;
 
 import lombok.Data;
 

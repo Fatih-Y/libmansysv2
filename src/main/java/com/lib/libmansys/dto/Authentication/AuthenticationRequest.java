@@ -1,4 +1,4 @@
-package com.lib.libmansys.dto;
+package com.lib.libmansys.dto.Authentication;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
-    private String email;
-    private String name;
+public class AuthenticationRequest {
     private String username;
     private String password;
 }

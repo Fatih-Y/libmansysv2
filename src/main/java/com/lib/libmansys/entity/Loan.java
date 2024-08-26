@@ -43,7 +43,6 @@ public class Loan {
     public Loan() {
     }
 
-    // All-args constructor
     public Loan(User user, Book book, LocalDate loanDate, LocalDate expectedReturnDate, LocalDate actualReturnDate, LoanStatus status) {
         this.user = user;
         this.book = book;

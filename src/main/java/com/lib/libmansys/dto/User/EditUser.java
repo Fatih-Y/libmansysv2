@@ -1,11 +1,12 @@
-package com.lib.libmansys.dto;
+package com.lib.libmansys.dto.User;
 
 import lombok.Data;
 
 @Data
-public class CreateUserRequest {
+public class EditUser {
     private String name;
-    private String username;
     private String email;
+    private String username;
     private String password;
+
 }

@@ -1,5 +1,6 @@
 package com.lib.libmansys.dto;
 
+import com.lib.libmansys.dto.Book.BookDTO;
 import com.lib.libmansys.entity.Enum.LoanStatus;
 import lombok.Data;
 

@@ -2,12 +2,15 @@ package com.lib.libmansys.service;
 
 
 import com.lib.libmansys.dto.*;
+import com.lib.libmansys.dto.Book.BookDTO;
+import com.lib.libmansys.dto.User.CreateUserRequest;
+import com.lib.libmansys.dto.User.UpdateUserRequest;
+import com.lib.libmansys.dto.User.UserDTO;
 import com.lib.libmansys.entity.Enum.LoanPeriodStatus;
 import com.lib.libmansys.entity.Enum.MembershipStatus;
 import com.lib.libmansys.entity.Enum.UserRole;
 import com.lib.libmansys.entity.User;
 import com.lib.libmansys.repository.UserRepository;
-import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +48,7 @@ public class UserService {
             return null;
         }
 
-        // Convert to DTO to exclude loans
+
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
         userDTO.setName(user.getName());
@@ -63,7 +66,6 @@ public class UserService {
             return Collections.emptyList();
         }
 
-        // Convert loans to LoanDTO
         List<LoanDTO> loanDTOs = user.getLoans().stream().map(loan -> {
             LoanDTO loanDTO = new LoanDTO();
             loanDTO.setId(loan.getId());
@@ -74,7 +76,7 @@ public class UserService {
             BookDTO bookDTO = new BookDTO();
             bookDTO.setId(loan.getBook().getId());
             bookDTO.setTitle(loan.getBook().getTitle());
-            // Include base64image or exclude it based on your requirements
+
             bookDTO.setBase64image(loan.getBook().getBase64image());
             loanDTO.setBook(bookDTO);
 
