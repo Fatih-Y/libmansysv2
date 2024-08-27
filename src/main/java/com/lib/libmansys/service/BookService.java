@@ -56,21 +56,19 @@ public class BookService {
                     }
                     String[] names = authorFullName.split(" ");
                     String firstName = names.length > 0 ? names[0] : "";
-                    String lastName = names.length > 1 ? names[1] : "DefaultSurname";
+                    String lastName = names.length > 1 ? names[1] : "Soyad";
                     return authorRepository.findByFirstNameAndLastName(firstName, lastName)
                             .orElseGet(() -> authorRepository.save(new Author(firstName, lastName)));
                 })
                 .collect(Collectors.toList());
         book.setAuthors(authors);
 
-        // Publishers handling
         List<Publisher> publishers = request.getPublishers().stream()
                 .map(publisherName -> publisherRepository.findByName(publisherName)
                         .orElseGet(() -> publisherRepository.save(new Publisher(publisherName))))
                 .collect(Collectors.toList());
         book.setPublishers(publishers);
 
-        // Genres handling
         List<Genre> genres = request.getGenres().stream()
                 .map(genreName -> genreRepository.findByName(genreName)
                         .orElseGet(() -> genreRepository.save(new Genre(genreName))))
@@ -165,26 +163,5 @@ public class BookService {
         return bookRepository.findAll(pageable);
     }
 
-    //    public Book updateBook(Long id, Book updatedBook) {
-//        return bookRepository.findById(id)
-//                .map(book -> {
-//                    book.setTitle(updatedBook.getTitle());
-//                    book.setAuthors(updatedBook.getAuthors());
-//                    book.setPublishers(updatedBook.getPublishers());
-//                    book.setGenres(updatedBook.getGenres());
-//
-//                    String fileName = StringUtils.cleanPath(updatedBook.getFile().getOriginalFilename());
-//                    if (fileName.contains("..")) {
-//                        System.out.println("Geçersiz dosya");
-//                    }
-//                    try {
-//                        book.setBase64image(Base64.getEncoder().encodeToString(createBookRequest.getFile().getBytes()));
-//                    } catch (IOException e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                    return bookRepository.save(book);
-//                })
-//                .orElseThrow(() -> new RuntimeException(id +" numaralı kitap bulunamadı. "));
-//    }
 }
 
