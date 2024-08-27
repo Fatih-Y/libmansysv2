@@ -10,6 +10,6 @@ public class UserDTO {
     private String email;
     private String username;
     private UserRole role;
-    // No loan details
+
 }
 

@@ -10,8 +10,10 @@ import com.lib.libmansys.repository.AuthorRepository;
 import com.lib.libmansys.repository.BookRepository;
 import com.lib.libmansys.repository.GenreRepository;
 import com.lib.libmansys.repository.PublisherRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.Row;
@@ -25,25 +27,21 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class BookService {
 
-    private final BookRepository bookRepository;
+    private final BookRepository bookRepository; //todo: too many dependencies
     private final AuthorRepository authorRepository;
     private final PublisherRepository publisherRepository;
     private final GenreRepository genreRepository;
-    @Autowired
-    public BookService(BookRepository bookRepository, AuthorRepository authorRepository, PublisherRepository publisherRepository, GenreRepository genreRepository) {
-        this.bookRepository = bookRepository;
-        this.authorRepository = authorRepository;
-        this.publisherRepository = publisherRepository;
-        this.genreRepository = genreRepository;
-    }
 
+    public Page<Book> findAllBooks(Pageable pageable) {
+        return bookRepository.findAll(pageable);
+    }
 
     public Book addBook(CreateBookRequest request) {
         Book book = new Book();
@@ -75,7 +73,7 @@ public class BookService {
                 .collect(Collectors.toList());
         book.setGenres(genres);
 
-        String fileName = StringUtils.cleanPath(request.getFile().getOriginalFilename());
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(request.getFile().getOriginalFilename()));
         if (fileName.contains("..")) {
             System.out.println("Geçersiz dosya");
         }
@@ -89,23 +87,29 @@ public class BookService {
 
         return bookRepository.save(book);
     }
-
-    public void deleteBook(Long id) {
-        bookRepository.deleteById(id);
+    public boolean deleteBook(Long id) {
+        return bookRepository.findById(id)
+                .map(book -> {
+                    bookRepository.delete(book);
+                    return true;
+                })
+                .orElse(false);
     }
     @Transactional
     public Book findBooksById(Long id) {
         return bookRepository.findById(id).orElse(null);
     }
+
     @Transactional
     public Page<Book> findBooksByStatus(BookStatus status, Pageable pageable) {
         return bookRepository.findByStatus(status, pageable);
     }
-    @Transactional
-    public List<Book> findBooksByTitle(String title) {
-        return bookRepository.findByTitleContainingIgnoreCase(title);
-    }
 
+    @Transactional
+    public List<Book> findBooksByTitle(String title) { // check for list use - done.
+        List<Book> booksByTitle = bookRepository.findByTitleContainingIgnoreCase(title);
+        return booksByTitle.isEmpty() ? Collections.emptyList() : booksByTitle;
+    }
     @Transactional
     public Page<Book> findBooksByFilters(String author, String genre, String publisher, String title, Pageable pageable) {
         if (author != null && genre == null && publisher == null && title == null) {
@@ -120,6 +124,7 @@ public class BookService {
             return bookRepository.findAll(pageable); // fallback
         }
     }
+
     @Transactional
     public Page<Book> findBooksBySingleFilter(String searchTerm, Pageable pageable) {
         if (searchTerm != null && !searchTerm.isEmpty()) {
@@ -158,10 +163,6 @@ public class BookService {
         outputStream.close();
     }
 
-
-    public Page<Book> findAllBooks(Pageable pageable) {
-        return bookRepository.findAll(pageable);
-    }
 
 }
 

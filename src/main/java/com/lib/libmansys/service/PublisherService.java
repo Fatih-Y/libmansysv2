@@ -3,27 +3,25 @@ package com.lib.libmansys.service;
 import com.lib.libmansys.dto.CreatePublisherInput;
 import com.lib.libmansys.entity.Publisher;
 import com.lib.libmansys.repository.PublisherRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PublisherService {
 
     private final PublisherRepository publisherRepository;
-    @Autowired
-    public PublisherService(PublisherRepository publisherRepository) {
-        this.publisherRepository = publisherRepository;
-    }
 
     public List<Publisher> getAllPublishers() {
         return publisherRepository.findAll();
     }
 
     public Publisher getPublisherById(Long id) {
-        return publisherRepository.findById(id).orElse(null);
+        return publisherRepository.findById(id).orElse(null); // checked
     }
 
     public Publisher createPublisher(CreatePublisherInput createPublisherInput) {
@@ -39,10 +37,15 @@ public class PublisherService {
             existingPublisher.setName(updatedPublisher.getName());
             return publisherRepository.save(existingPublisher);
         }
-        return null;
+        return null; // checked
     }
 
-    public void deletePublisher(Long id) {
-        publisherRepository.deleteById(id);
+    public boolean deletePublisher(Long id) {
+        return publisherRepository.findById(id)
+                .map(book -> {
+                    publisherRepository.delete(book);
+                    return true;
+                })
+                .orElse(false);
     }
 }

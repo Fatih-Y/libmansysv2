@@ -6,9 +6,9 @@ import com.lib.libmansys.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -22,16 +22,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
+@RequiredArgsConstructor
 public class BookController {
 
     private final BookService bookService;
     private static final Logger log = LoggerFactory.getLogger(BookController.class);
 
-
-    @Autowired
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
-    }
     @Operation(tags = "Book", description = "Add a new book. Creates a new author, publisher, genre if don't exist. ADMIN ONLY", responses = {
             @ApiResponse(description = "Success", responseCode = "200"
 
@@ -41,29 +37,30 @@ public class BookController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value ="/addBook", consumes = {"multipart/form-data"})
     public ResponseEntity<String> addBook(@ModelAttribute CreateBookRequest createBookRequest) {
-        bookService.addBook(createBookRequest);
-        return ResponseEntity.ok("Kitap Ekleme Başarılı");
+        Book newBook = bookService.addBook(createBookRequest);
+        return ResponseEntity.ok("Kitap ekleme başarılı. Kitap ismi: "+ newBook.getTitle());
     }
 
     @Operation(tags = "Book", description = "Delete a book using it's id. ADMIN ONLY", responses = {
-            @ApiResponse(description = "Success", responseCode = "200"
-
-            ), @ApiResponse(description = "Data Not Found", responseCode = "404"
-
-    )})
+            @ApiResponse(description = "Success", responseCode = "200"),
+            @ApiResponse(description = "Data Not Found", responseCode = "404")
+    })
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
-        bookService.deleteBook(id);
-        return ResponseEntity.ok().build();
+        boolean deleted = bookService.deleteBook(id);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Operation(tags = "Book", description = "Get a list of all the books using pagination.", responses = {
             @ApiResponse(description = "Success", responseCode = "200"
 
-            ), @ApiResponse(description = "Data Not Found", responseCode = "404"
-
-    )})
+            ), @ApiResponse(description = "Data Not Found", responseCode = "404")
+    })
     @GetMapping("/getAllBooks")
     public Page<Book> getAllBooks(@PageableDefault(size = 10) Pageable pageable) {
         return bookService.findAllBooks(pageable);
@@ -130,13 +127,11 @@ public class BookController {
                                        @PageableDefault(size = 10) Pageable pageable) {
         return bookService.findBooksByStatus(status, pageable);
     }
-    
+
     @Operation(tags = "Book", responses = {
-            @ApiResponse(description = "Success", responseCode = "200"
-
-            ), @ApiResponse(description = "Data Not Found", responseCode = "404"
-
-    )})
+            @ApiResponse(description = "Success", responseCode = "200"),
+            @ApiResponse(description = "Data Not Found", responseCode = "404")
+    })
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/export")
     public ResponseEntity<String> exportBooks(HttpServletResponse response) {

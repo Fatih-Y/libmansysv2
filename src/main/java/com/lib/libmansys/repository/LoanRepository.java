@@ -11,7 +11,7 @@ import java.util.List;
 public interface LoanRepository extends JpaRepository<Loan, Long> {
 
     int countByUserIdAndStatus(Long userId, LoanStatus status);
-    List<Loan> findLoansByUserIdAndStatus(Long userId, LoanStatus status);
+
     List<Loan> findByUserId(Long userId);
     List<Loan> findByUserIdAndBookIdAndStatusIn(Long userId, Long bookId, List<LoanStatus> statuses);
     List<Loan> findAllByStatus(LoanStatus status);

@@ -7,7 +7,9 @@ import com.lib.libmansys.dto.User.UpdateUserRequest;
 import com.lib.libmansys.dto.User.UserDTO;
 import com.lib.libmansys.entity.User;
 import com.lib.libmansys.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,11 +18,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
     private UserService userService;
-    @Autowired
     private AuthenticationService authService;
 
     @GetMapping("/getUserDetails/{id}")
@@ -48,7 +49,8 @@ public class UserController {
 
     @PutMapping("/updateUser/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest updateUserRequest) {
-        return ResponseEntity.ok(userService.updateUser(id, updateUserRequest));
+        User updatedUser = userService.updateUser(id, updateUserRequest);
+        return updatedUser != null ? ResponseEntity.ok(updatedUser) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")

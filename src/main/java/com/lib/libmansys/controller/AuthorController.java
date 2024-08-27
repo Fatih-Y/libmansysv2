@@ -2,10 +2,11 @@ package com.lib.libmansys.controller;
 
 import com.lib.libmansys.dto.Author.CreateAuthorInput;
 import com.lib.libmansys.entity.Author;
+import com.lib.libmansys.repository.AuthorRepository;
 import com.lib.libmansys.service.AuthorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -15,14 +16,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/authors")
+@RequiredArgsConstructor
 public class AuthorController {
 
     private final AuthorService authorService;
 
-    @Autowired
-    public AuthorController(AuthorService authorService) {
-        this.authorService = authorService;
-    }
 
     @Operation(tags = "Author", description = "Create a new author", responses = {
             @ApiResponse(description = "Success", responseCode = "200"
@@ -33,7 +31,7 @@ public class AuthorController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/addAuthor")
     public ResponseEntity<Author> addAuthor(@RequestBody CreateAuthorInput createAuthorInput) {
-        Author savedAuthor = authorService.createAuthor(createAuthorInput);
+        Author savedAuthor = authorService.createAuthor(createAuthorInput); // better for adjusting if there could become a need for checking, before passed on
         return ResponseEntity.ok(savedAuthor);
     }
 
@@ -49,6 +47,7 @@ public class AuthorController {
         Author updatedAuthor = authorService.updateAuthor(id, author);
         return ResponseEntity.ok(updatedAuthor);
     }
+
     @Operation(tags = "Author", description = "Delete author", responses = {
             @ApiResponse(description = "Success", responseCode = "200"
 
@@ -58,8 +57,12 @@ public class AuthorController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteAuthor(@PathVariable Long id) {
-        authorService.deleteAuthor(id);
-        return ResponseEntity.ok().build();
+        boolean deleted = authorService.deleteAuthor(id);
+        if (deleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Operation(tags = "Author", description = "Get all the authors", responses = {
@@ -86,6 +89,20 @@ public class AuthorController {
         return author.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    /* service
+    public Optional<Author> getAuthorById(Long id) {
+        return authorRepository.findById(id);
+    }
+
+     this is preferable in scenarios where the absence of an entity is expected or normal. using optional prevents common runtime errors gracefully.
+     if it isn't expected or normal like in update or delete scenarios where the record should already exist = set to throw
+    entity not found exception in a method => also good practice when using global exception handling
+    that returns entity.
+
+
+
+     */
 }
 
 

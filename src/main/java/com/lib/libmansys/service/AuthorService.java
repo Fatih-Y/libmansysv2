@@ -4,27 +4,29 @@ package com.lib.libmansys.service;
 import com.lib.libmansys.dto.Author.CreateAuthorInput;
 import com.lib.libmansys.entity.Author;
 import com.lib.libmansys.repository.AuthorRepository;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
-    @Autowired
-    public AuthorService(AuthorRepository authorRepository) {
-        this.authorRepository = authorRepository;
-    }
+
 
     public List<Author> getAllAuthors() {
-        return authorRepository.findAll();
+        List<Author> authors = authorRepository.findAll();
+        return authors.isEmpty() ? Collections.emptyList() : authors; // returning an empty list instead of null
     }
 
     public Optional<Author> getAuthorById(Long id) {
-        return Optional.ofNullable(authorRepository.findById(id).orElse(null));
+        return authorRepository.findById(id);
     }
 
     public Author createAuthor(CreateAuthorInput createAuthorInput) {
@@ -42,10 +44,15 @@ public class AuthorService {
             existingAuthor.setLastName(updatedAuthor.getLastName());
             return authorRepository.save(existingAuthor);
         }
-        return null;
+        throw new EntityNotFoundException(id+" id'ye sahip yazar bulunamadı.");
     }
 
-    public void deleteAuthor(Long id) {
-        authorRepository.deleteById(id);
+    public boolean deleteAuthor(Long id) {
+        return authorRepository.findById(id)
+                .map(genre -> {
+                    authorRepository.delete(genre);
+                    return true;
+                })
+                .orElse(false);
     }
 }

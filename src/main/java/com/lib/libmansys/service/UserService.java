@@ -11,9 +11,9 @@ import com.lib.libmansys.entity.Enum.MembershipStatus;
 import com.lib.libmansys.entity.Enum.UserRole;
 import com.lib.libmansys.entity.User;
 import com.lib.libmansys.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,32 +23,27 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final EmailService emailService;
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
-    @Autowired
-    public UserService(UserRepository userRepository, EmailService emailService) {
-        this.userRepository = userRepository;
-        this.emailService = emailService;
-    }
+
     @Transactional
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
     @Transactional
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id).orElse(null); // todo: need detailed check
     }
     public UserDTO getUserDetailsById(Long id) {
-        User user = userRepository.findById(id).orElse(null);
+        User user = userRepository.findById(id).orElse(null); // checked
 
         if (user == null) {
-            return null;
+            return null; //
         }
-
-
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
         userDTO.setName(user.getName());
@@ -60,13 +55,13 @@ public class UserService {
     }
     @Transactional
     public List<LoanDTO> getUserLoansById(Long id) {
-        User user = userRepository.findById(id).orElse(null);
+        User user = userRepository.findById(id).orElse(null); // checked
 
         if (user == null) {
             return Collections.emptyList();
         }
 
-        List<LoanDTO> loanDTOs = user.getLoans().stream().map(loan -> {
+        List<LoanDTO> loanDTOs = user.getLoans().stream().map(loan -> {   // learn more about the suggested fix
             LoanDTO loanDTO = new LoanDTO();
             loanDTO.setId(loan.getId());
             loanDTO.setLoanDate(loan.getLoanDate());

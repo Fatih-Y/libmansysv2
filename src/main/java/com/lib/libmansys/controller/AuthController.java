@@ -7,6 +7,7 @@ import com.lib.libmansys.dto.Authentication.RegisterRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.annotation.security.PermitAll;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin
+@RequiredArgsConstructor
 public class AuthController {
 
-    @Autowired
-    private AuthenticationService authService;
+
+    private final AuthenticationService authService;
 
     @Operation(tags = "Authentication", description = "Sign-up as a new user", responses = {
             @ApiResponse(description = "Success", responseCode = "200"
@@ -32,13 +34,14 @@ public class AuthController {
     ){
         return ResponseEntity.ok(authService.register(request));
     }
+
+
     @Operation(tags = "Authentication", description = "Login using user credentials", responses = {
             @ApiResponse(description = "Success", responseCode = "200"
 
             ), @ApiResponse(description = "Data Not Found", responseCode = "404"
 
     )})
-
     @PostMapping("/authenticate")
     @PermitAll
     public ResponseEntity<AuthenticationResponse> authenticate(

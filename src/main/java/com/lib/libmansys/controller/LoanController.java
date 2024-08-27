@@ -10,6 +10,7 @@ import com.lib.libmansys.service.BookService;
 import com.lib.libmansys.service.EmailService;
 import com.lib.libmansys.service.LoanService;
 import com.lib.libmansys.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,20 +20,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/loans")
+@RequiredArgsConstructor
 public class LoanController {
 
-
-    private final LoanService loanService;
+    private final LoanService loanService; //todo: too many dependencies
     private final UserService userService;
     private final BookService bookService;
     private final EmailService emailService;
-    @Autowired
-    public LoanController(LoanService loanService, UserService userService, BookService bookService, EmailService emailService) {
-        this.loanService = loanService;
-        this.userService = userService;
-        this.bookService = bookService;
-        this.emailService = emailService;
-    }
 
 
     @PostMapping("/borrow")

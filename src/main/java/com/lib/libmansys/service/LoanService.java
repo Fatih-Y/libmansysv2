@@ -7,40 +7,40 @@ import com.lib.libmansys.entity.Loan;
 import com.lib.libmansys.entity.User;
 import com.lib.libmansys.repository.BookRepository;
 import com.lib.libmansys.repository.LoanRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.lib.libmansys.entity.Enum.LoanPeriodStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class LoanService {
 
-    private final LoanRepository loanRepository;
+    private final LoanRepository loanRepository; //todo: too many dependencies
     private final BookRepository bookRepository;
     private final UserService userService;
     private final BookService bookService;
 
-    public LoanService(LoanRepository loanRepository, BookRepository bookRepository, UserService userService, BookService bookService) {
-        this.loanRepository = loanRepository;
-        this.bookRepository = bookRepository;
-        this.userService = userService;
-        this.bookService = bookService;
-    }
+    private static final int MAX_ACTIVE_LOANS = 3;
 
-    public boolean canBorrowMoreBooks(User user) {
-        int activeLoanCount = loanRepository.countByUserIdAndStatus(user.getId(), LoanStatus.ACTIVE);
-        return activeLoanCount < 3;
+    public boolean canBorrowMoreBooks(Long userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("Kullanıcı id boş bırakılamaz");
+        }
+        int activeLoanCount = loanRepository.countByUserIdAndStatus(userId, LoanStatus.ACTIVE);
+        return activeLoanCount < MAX_ACTIVE_LOANS;
     }
 // user entity yerine id al - tamamlandı
     public void borrowBook(Long userId, Long bookId) {
         User user = userService.getUserById(userId);
         Book book = bookService.findBooksById(bookId);
 
-        if (!canBorrowMoreBooks(user)) {
+        if (!canBorrowMoreBooks(userId)) {
             throw new RuntimeException("Maksimum ödünç kitap sınırına ulaşıldı.");
         }
         if (book.getStatus() != BookStatus.AVAILABLE) {
@@ -68,7 +68,7 @@ public class LoanService {
 
         Loan loan = loans.stream()
                 .filter(l -> l.getBook().getId().equals(bookId))
-                .findFirst()
+                .findFirst()  // optional loan
                 .orElseThrow(() -> new RuntimeException("No active or late loan found for this book."));
 
         if (book.getStatus() != BookStatus.LOANED) {
