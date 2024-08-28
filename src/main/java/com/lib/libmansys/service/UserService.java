@@ -92,7 +92,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateUser(Long id, UpdateUserRequest updateUserRequest) {
+    public boolean updateUser(Long id, UpdateUserRequest updateUserRequest) {
         Optional<User> existingUserOptional = userRepository.findById(id);
         if (existingUserOptional.isPresent()) {
             User existingUser = existingUserOptional.get();
@@ -100,9 +100,10 @@ public class UserService {
             existingUser.setEmail(updateUserRequest.getEmail());
             existingUser.setUsername(updateUserRequest.getUsername());
             existingUser.setPassword(updateUserRequest.getPassword());
-            return userRepository.save(existingUser);
+            userRepository.save(existingUser);
+            return true;
         }
-        return null;
+        return false;
     }
     public void makeAdmin(Long id) {
         Optional<User> userOptional = userRepository.findById(id);

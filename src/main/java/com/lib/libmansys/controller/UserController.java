@@ -21,8 +21,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    private UserService userService;
-    private AuthenticationService authService;
+    private final UserService userService;
+    private final AuthenticationService authService;
 
     @GetMapping("/getUserDetails/{id}")
     public ResponseEntity<UserDTO> getUserDetails(@PathVariable Long id) {
@@ -48,9 +48,9 @@ public class UserController {
     }
 
     @PutMapping("/updateUser/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest updateUserRequest) {
-        User updatedUser = userService.updateUser(id, updateUserRequest);
-        return updatedUser != null ? ResponseEntity.ok(updatedUser) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<Boolean> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest updateUserRequest) {
+        boolean updatedUser = userService.updateUser(id, updateUserRequest);
+        return updatedUser  ? ResponseEntity.ok(true) : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
