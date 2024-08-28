@@ -18,6 +18,7 @@ public class CorsConfig {
                                 "http://localhost:3002",
                                 "http://localhost:3001","https://libmansysv2.onrender.com",
                                 "https://libmansys-fikm8n7fh-fatih-ys-projects.vercel.app",
+                                "https://libmansys-fe.vercel.app",
                                 "https://libmansysv2.onrender.com/swagger-ui/index.html#")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
